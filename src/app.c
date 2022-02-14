@@ -17,7 +17,7 @@ static struct k_thread app_threads[NUM_APP_THREADS] = { 0, };
  */
 static void _start_app_threads(struct app_data* app_data)
 {
-    
+
 }
 
 /**
@@ -32,6 +32,8 @@ void app_init(struct app_data* app_data)
     app_data->num_app_threads = NUM_APP_THREADS;
     get_devices(app_data->devs);
     dev_init(app_data->devs);
+
+    _start_app_threads(app_data);
 }
 
 void app_start(const struct app_data* app_data)
