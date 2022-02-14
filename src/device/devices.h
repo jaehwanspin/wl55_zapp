@@ -6,17 +6,19 @@ extern "C"
 {
 #endif
 
+struct gpio_dt_spec;
 struct device;
 
 struct devices
 {
-    const struct device* led;
-    const struct device* fr_btn;
-    const struct device* uart;
-    const struct device* lora;
-    const struct device* flash;
-    const struct device* i2c;
-    const struct device* spi;
+    const struct gpio_dt_spec* led;
+    const struct gpio_dt_spec* fr_btn;
+    const struct gpio_dt_spec* dfu_btn;
+    const struct device*       uart;
+    const struct device*       lora;
+    const struct device*       flash;
+    const struct device*       i2c;
+    const struct device*       spi;
 };
 
 void get_devices(struct devices*);

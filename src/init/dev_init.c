@@ -1,15 +1,13 @@
 #include "./dev_init.h"
+#include "../device/devices.h"
+#include "../file/flash_data.h"
 
+#include <drivers/gpio.h>
 #include <drivers/uart.h>
 #include <drivers/flash.h>
 #include <drivers/lora.h>
 
 #include <stdbool.h>
-
-#include "../device/devices.h"
-
-#define UART_CONFIG_FLASH_MEM_PAGE 126U
-#define LORA_CONFIG_FLASH_MEM_PAGE 127U
 
 /**
  * @brief sets to default LoRa config 920MHz
@@ -43,21 +41,19 @@ static void _set_default_uart_config(struct uart_config* cfg)
 
 static void _parse_lora_options(const struct device* flash_dev,
                                 const struct device* lora_dev,
-                                const struct lora_modem_config* out_cfg)
+                                const struct lora_modem_config* out_cfg,
+                                const struct gpio_dt_spec* err_led)
 {
-    int flash_read_res = -1;
-    int offset = 0;
-    struct flash_pages_info pages_info = { 0, };
+    int flash_read_res = flash_read_lora_config(flash_dev, out_cfg);
 
-    flash_read_res = flash_get_page_info_by_idx(flash_dev,
-                                                LORA_CONFIG_FLASH_MEM_PAGE,
-                                                &pages_info);
-    offset += pages_info.start_offset;
-
-    flash_read_res = flash_read(flash_dev,
-                                offset,
-                                out_cfg,
-                                sizeof(struct lora_modem_config));
+    if (flash_read_res < 0)
+    {
+        while (true)
+        {
+            gpio_pin_toggle(err_led->port, err_led->pin);
+            k_sleep(K_MSEC(200));
+        }
+    }
 }
 
 
@@ -70,9 +66,19 @@ static void _parse_lora_options(const struct device* flash_dev,
  */
 static void _parse_uart_options(const struct device* flash_dev,
                                 const struct device* uart_dev,
-                                const struct uart_config* out_cfg)
+                                const struct uart_config* out_cfg,
+                                const struct gpio_dt_spec* err_led)
 {
+    int flash_read_res = flash_read_uart_config(flash_dev, out_cfg);
 
+    if (flash_read_res < 0)
+    {
+        while (true)
+        {
+            gpio_pin_toggle(err_led->port, err_led->pin);
+            k_sleep(K_MSEC(200));
+        }
+    }
 }
 
 /**
@@ -102,9 +108,27 @@ static bool _validate_lora_options(const struct lora_modem_config* cfg)
     return res;
 }
 
+static bool _validate_uart_options(const struct uart_config* cfg)
+{
+    bool res = true;
+
+    if (cfg->baudrate != 57600 || cfg->baudrate != 19200 ||
+        cfg->baudrate != 115200 || cfg->baudrate != 9600)
+        res = false;
+
+    
+    
+    return res;
+}
+
+/**
+ * @brief Nothing to do
+ * 
+ * @param devs 
+ */
 static void _flash_mem_init(const struct devices* devs)
 {
-
+   volatile int nothing = 0; 
 }
 
 static void _lora_init(const struct devices* devs)
@@ -112,7 +136,7 @@ static void _lora_init(const struct devices* devs)
     int init_res = -1;
     struct lora_modem_config cfg = { 0, };
 
-    _parse_lora_options(devs->flash, devs->lora, &cfg);
+    _parse_lora_options(devs->flash, devs->lora, &cfg, devs->led);
 
     if (!_validate_lora_options(&cfg))
         _set_default_lora_config(&cfg);
@@ -120,17 +144,40 @@ static void _lora_init(const struct devices* devs)
     init_res = lora_config(devs->lora, &cfg);
 
     if (init_res < 0)
-        while (true);
+    {
+        while (true)
+        {
+            gpio_pin_toggle(devs->led->port, devs->led->pin);
+            k_sleep(K_MSEC(200));
+        }
+    }
 }
 
 static void _uart_init(const struct devices* devs)
 {
+    int init_res = -1;
     struct uart_config cfg = { 0, };
+
+    _parse_uart_options(devs->flash, devs->uart, &cfg, devs->led);
+
+    if (!_validate_gpio_options(&cfg))
+        _set_default_uart_config(&cfg);
     
+    init_res = uart_configure(devs->uart, &cfg);
+
+    if (init_res < 0)
+    {
+        while (true)
+        {
+            gpio_pin_toggle(devs->led->port, devs->led->pin);
+            k_sleep(K_MSEC(200));
+        }
+    }
 }
 
 void dev_init(const struct devices* devs)
 {
     _flash_mem_init(devs);
+    _uart_init(devs);
     _lora_init(devs);
 }
