@@ -10,6 +10,7 @@
 #include <stdbool.h>
 
 /**
+ * @author Jin
  * @brief sets to default LoRa config 920MHz
  * 
  * @param cfg 
@@ -26,6 +27,7 @@ static void _set_default_lora_config(struct lora_modem_config* cfg)
 }
 
 /**
+ * @author Jin
  * @brief sets to default UART config 115200-8-N-1
  * 
  * @param cfg 
@@ -39,6 +41,16 @@ static void _set_default_uart_config(struct uart_config* cfg)
     cfg->stop_bits = UART_CFG_STOP_BITS_1;
 }
 
+
+/**
+ * @author Jin
+ * @brief parses LoRa options or error led on
+ * 
+ * @param flash_dev 
+ * @param lora_dev 
+ * @param out_cfg 
+ * @param err_led 
+ */
 static void _parse_lora_options(const struct device* flash_dev,
                                 const struct device* lora_dev,
                                 const struct lora_modem_config* out_cfg,
@@ -58,6 +70,7 @@ static void _parse_lora_options(const struct device* flash_dev,
 
 
 /**
+ * @author Jin
  * @brief parses UART options from the flash memory
  * 
  * @param flash_dev 
@@ -82,6 +95,7 @@ static void _parse_uart_options(const struct device* flash_dev,
 }
 
 /**
+ * @author Jin
  * @brief validates LoRa options
  *
  * KR Non-License frequency 920900000 Hz ~ 923300000 Hz
@@ -108,6 +122,14 @@ static bool _validate_lora_options(const struct lora_modem_config* cfg)
     return res;
 }
 
+/**
+ * @author Jin
+ * @brief validates UART options
+ * 
+ * @param cfg 
+ * @return true 
+ * @return false 
+ */
 static bool _validate_uart_options(const struct uart_config* cfg)
 {
     bool res = true;
@@ -116,12 +138,24 @@ static bool _validate_uart_options(const struct uart_config* cfg)
         cfg->baudrate != 115200 || cfg->baudrate != 9600)
         res = false;
 
-    
+    if (cfg->data_bits > UART_CFG_DATA_BITS_9)
+        res = false;
+
+    if (cfg->flow_ctrl > UART_CFG_FLOW_CTRL_DTR_DSR)
+        res = false;
+
+    if (cfg->parity != UART_PARITY_ODD || cfg->parity != UART_PARITY_EVEN ||
+        cfg->parity != UART_PARITY_NONE)
+        res = false;
+
+    if (cfg->stop_bits > UART_CFG_STOP_BITS_2)
+        res = false;
     
     return res;
 }
 
 /**
+ * @author Jin
  * @brief Nothing to do
  * 
  * @param devs 
@@ -131,6 +165,12 @@ static void _flash_mem_init(const struct devices* devs)
    volatile int nothing = 0; 
 }
 
+/**
+ * @author Jin
+ * @brief initialize LoRa device or error LED output
+ * 
+ * @param devs 
+ */
 static void _lora_init(const struct devices* devs)
 {
     int init_res = -1;
@@ -153,6 +193,12 @@ static void _lora_init(const struct devices* devs)
     }
 }
 
+/**
+ * @author Jin
+ * @brief initialize UART device or error LED output
+ * 
+ * @param devs 
+ */
 static void _uart_init(const struct devices* devs)
 {
     int init_res = -1;
@@ -160,7 +206,7 @@ static void _uart_init(const struct devices* devs)
 
     _parse_uart_options(devs->flash, devs->uart, &cfg, devs->led);
 
-    if (!_validate_gpio_options(&cfg))
+    if (!_validate_uart_options(&cfg))
         _set_default_uart_config(&cfg);
     
     init_res = uart_configure(devs->uart, &cfg);
@@ -175,6 +221,12 @@ static void _uart_init(const struct devices* devs)
     }
 }
 
+/**
+ * @author Jin
+ * @brief initialize devices (UART, LoRa)
+ * 
+ * @param devs 
+ */
 void dev_init(const struct devices* devs)
 {
     _flash_mem_init(devs);

@@ -103,8 +103,10 @@ static void _get_i2c(struct devices* devs)
  */
 void get_devices(struct devices* devs)
 {
-    _get_flash(devs);
     _get_led(devs);
+    _get_fr_btn(devs);
+    _get_dfu_btn(devs);
+    _get_flash(devs);
     _get_uart(devs);
     _get_flash(devs);
     _get_lora(devs);
