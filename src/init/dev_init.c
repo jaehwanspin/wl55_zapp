@@ -53,7 +53,7 @@ static void _set_default_uart_config(struct uart_config* cfg)
  */
 static void _parse_lora_options(const struct device* flash_dev,
                                 const struct device* lora_dev,
-                                const struct lora_modem_config* out_cfg,
+                                struct lora_modem_config* out_cfg,
                                 const struct gpio_dt_spec* err_led)
 {
     int flash_read_res = flash_read_lora_config(flash_dev, out_cfg);
@@ -79,7 +79,7 @@ static void _parse_lora_options(const struct device* flash_dev,
  */
 static void _parse_uart_options(const struct device* flash_dev,
                                 const struct device* uart_dev,
-                                const struct uart_config* out_cfg,
+                                struct uart_config* out_cfg,
                                 const struct gpio_dt_spec* err_led)
 {
     int flash_read_res = flash_read_uart_config(flash_dev, out_cfg);

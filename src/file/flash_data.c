@@ -30,7 +30,7 @@ int flash_write_lora_config(const struct device *flash_dev,
 }
 
 int flash_read_lora_config(const struct device *flash_dev,
-                           const struct lora_modem_config *cfg)
+                           struct lora_modem_config *cfg)
 {
     int flash_read_res = -1;
     int offset = 0;
@@ -74,7 +74,7 @@ int flash_write_uart_config(const struct device *flash_dev,
 }
 
 int flash_read_uart_config(const struct device *flash_dev,
-                           const struct uart_config *cfg)
+                           struct uart_config *cfg)
 {
     int flash_read_res = -1;
     int offset = 0;
