@@ -68,6 +68,7 @@ static void _get_dfu_btn(struct devices* devs)
 static void _get_uart(struct devices* devs)
 {
     devs->uart = DEVICE_DT_GET(DT_CHOSEN(zephyr_shell_uart));
+
 }
 
 /**
@@ -112,7 +113,10 @@ void get_devices(struct app_data* app_data)
     _get_fr_btn(app_data->devs);
     _get_dfu_btn(app_data->devs);
     _get_flash(app_data->devs);
+
     _get_uart(app_data->devs);
+    k_mutex_init(&app_data->uart_output_mtx);
+    
     _get_flash(app_data->devs);
     _get_lora(app_data->devs);
     _get_i2c(app_data->devs);

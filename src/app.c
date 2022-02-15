@@ -5,6 +5,8 @@
 
 #include <zephyr.h>
 
+K_THREAD_STACK_DEFINE(fuck, 1024);
+
 /**
  * @brief initialize this app
  * 
@@ -16,6 +18,7 @@ void app_init(struct app_data* app_data)
     dev_init(app_data->devs);
     // todo env_init
     threads_init(app_data);
+    app_data->app_alive = true;
 }
 
 void app_start(const struct app_data* app_data)
@@ -25,7 +28,7 @@ void app_start(const struct app_data* app_data)
 
 void app_deinit(const struct app_data* app_data)
 {
-    
+
 }
 
 /**
