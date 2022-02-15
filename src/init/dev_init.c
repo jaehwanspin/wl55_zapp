@@ -59,13 +59,7 @@ static void _parse_lora_options(const struct device* flash_dev,
     int flash_read_res = flash_read_lora_config(flash_dev, out_cfg);
 
     if (flash_read_res < 0)
-    {
-        while (true)
-        {
-            gpio_pin_toggle(err_led->port, err_led->pin);
-            k_sleep(K_MSEC(200));
-        }
-    }
+        enable_led_error(err_led);
 }
 
 
@@ -86,11 +80,7 @@ static void _parse_uart_options(const struct device* flash_dev,
 
     if (flash_read_res < 0)
     {
-        while (true)
-        {
-            gpio_pin_toggle(err_led->port, err_led->pin);
-            k_sleep(K_MSEC(200));
-        }
+        enable_led_error(err_led);
     }
 }
 
@@ -162,7 +152,8 @@ static bool _validate_uart_options(const struct uart_config* cfg)
  */
 static void _flash_mem_init(const struct devices* devs)
 {
-   volatile int nothing = 0; 
+   volatile int nothing = 0;
+   (void)nothing;
 }
 
 /**
@@ -185,11 +176,7 @@ static void _lora_init(const struct devices* devs)
 
     if (init_res < 0)
     {
-        while (true)
-        {
-            gpio_pin_toggle(devs->led->port, devs->led->pin);
-            k_sleep(K_MSEC(200));
-        }
+        enable_led_error(devs->led);
     }
 }
 
@@ -213,11 +200,7 @@ static void _uart_init(const struct devices* devs)
 
     if (init_res < 0)
     {
-        while (true)
-        {
-            gpio_pin_toggle(devs->led->port, devs->led->pin);
-            k_sleep(K_MSEC(200));
-        }
+        enable_led_error(devs->led);
     }
 }
 

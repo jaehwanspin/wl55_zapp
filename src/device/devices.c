@@ -1,11 +1,15 @@
 #include "./devices.h"
 
+#include "../app.h"
+
 #include <device.h>
 #include <drivers/flash.h>
 #include <drivers/gpio.h>
 #include <drivers/uart.h>
 #include <drivers/lora.h>
 #include <drivers/i2c.h>
+
+static struct devices devs = { 0, };
 
 static const struct gpio_dt_spec led_spec =
     GPIO_DT_SPEC_GET(DT_ALIAS(led0), gpios);
@@ -101,15 +105,25 @@ static void _get_i2c(struct devices* devs)
  * 
  * @param devs 
  */
-void get_devices(struct devices* devs)
+void get_devices(struct app_data* app_data)
 {
-    _get_led(devs);
-    _get_fr_btn(devs);
-    _get_dfu_btn(devs);
-    _get_flash(devs);
-    _get_uart(devs);
-    _get_flash(devs);
-    _get_lora(devs);
-    _get_i2c(devs);
-    _get_spi(devs);
+    app_data->devs = &devs;
+    _get_led(app_data->devs);
+    _get_fr_btn(app_data->devs);
+    _get_dfu_btn(app_data->devs);
+    _get_flash(app_data->devs);
+    _get_uart(app_data->devs);
+    _get_flash(app_data->devs);
+    _get_lora(app_data->devs);
+    _get_i2c(app_data->devs);
+    _get_spi(app_data->devs);
+}
+
+void enable_led_error(const struct gpio_dt_spec* led_dev)
+{
+    while (true)
+    {
+        gpio_pin_toggle(led_dev->port, led_dev->pin);
+        k_sleep(K_MSEC(200));
+    }
 }

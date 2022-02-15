@@ -10,21 +10,22 @@ extern "C"
 #include <stdbool.h>
 
 struct k_thread;
+struct z_thread_stack_element;
+
 struct devices;
 
 struct app_data
 {
-    struct devices*  devs;
-    struct k_thread* app_threads;
-    size_t           num_app_threads;
-    bool             app_alive;
+    struct devices*                 devs;
+    struct k_thread*                app_threads;
+    struct z_thread_stack_element** app_stacks;
+    size_t                          num_app_threads;
+    bool                            app_alive;
 };
 
 void app_init(struct app_data*);
 void app_start(const struct app_data*);
 void app_deinit(const struct app_data*);
-
-struct k_thread* get_event_thread(struct app_data*);
 
 bool is_app_alive(const struct app_data*);
 

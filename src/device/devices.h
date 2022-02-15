@@ -6,6 +6,8 @@ extern "C"
 {
 #endif
 
+struct app_data;
+
 struct gpio_dt_spec;
 struct device;
 
@@ -21,7 +23,9 @@ struct devices
     const struct device*       spi;
 };
 
-void get_devices(struct devices*);
+void get_devices(struct app_data*);
+
+void enable_led_error(const struct gpio_dt_spec*);
 
 #ifdef __cplusplus
 }
