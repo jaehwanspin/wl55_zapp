@@ -2,8 +2,8 @@
 #define __IFACE_AT_COMMAND_H__
 
 /**
- * @brief AT command library for firmware
  * @author Jin
+ * @brief AT command library
  *     _  _____    ____ ___  __  __ __  __    _    _   _ ____  
  *    / \|_   _|  / ___/ _ \|  \/  |  \/  |  / \  | \ | |  _ \ 
  *   / _ \ | |   | |  | | | | |\/| | |\/| | / _ \ |  \| | | | |
@@ -27,35 +27,58 @@ extern "C"
 #include <stddef.h>
 #include <stdbool.h>
 
+#ifndef AT_COMMAND_ARGV_MAX_SIZE
+#define AT_COMMAND_ARGV_MAX_SIZE (size_t)8U
+#endif
+
 #ifndef AT_COMMAND_RX_BUFFER_MAX_SIZE
-#define AT_COMMAND_RX_BUFFER_MAX_SIZE (size_t)128U
+#define AT_COMMAND_RX_BUFFER_MAX_SIZE (size_t)32U
+#endif
+
+#ifndef AT_COMMAND_PROMPT_MAX_SIZE
+#define AT_COMMAND_PROMPT_MAX_SIZE (size_t)16U
+#endif
+
+#ifndef AT_COMMAND_ERROR_MSG_MAX_SIZE
+#define AT_COMMAND_ERROR_MSG_MAX_SIZE (size_t)32U
+#endif
+
+#ifndef AT_COMMAND_COMMAND_MAX_SIZE
+#define AT_COMMAND_COMMAND_MAX_SIZE (size_t)16U
+#endif
+
+#ifndef AT_COMMAND_COMMANDS_MAX_SIZE
+#define AT_COMMAND_COMMANDS_MAX_SIZE (size_t)32U
 #endif
 
 typedef int(*at_command_cb_func_t)(int, char**);
 
 struct at_command_cfg
 {
-    char main_command[8];
-    char sub_commands[8][64];
+    char prompt[AT_COMMAND_PROMPT_MAX_SIZE];
+    char error_msg[AT_COMMAND_ERROR_MSG_MAX_SIZE];
 };
 
-struct at_command_cmd
+struct at_command_command
 {
-    at_command_cb_func_t callback;
+    char command[AT_COMMAND_COMMAND_MAX_SIZE];
+    at_command_cb_func_t cb_func;
 };
 
 struct at_command_context
 {
-    char                  main_command[8]; // default "AT"
-    char                  rx_buffer[AT_COMMAND_RX_BUFFER_MAX_SIZE];
+    size_t rx_buffer_size;
+    char rx_buffer[AT_COMMAND_RX_BUFFER_MAX_SIZE];
     struct at_command_cfg cfg;
-
+    size_t cmds_size;
+    struct at_command_command cmds[AT_COMMAND_COMMANDS_MAX_SIZE];
 };
 
-bool at_command_init(struct at_command_context*, const struct at_command_cfg*);
+bool at_command_init(struct at_command_context*, struct at_command_cfg*);
 bool at_command_add_cmd(struct at_command_context*, const char*, at_command_cb_func_t);
+bool at_command_remove_cmd(struct at_command_context*, const char*);
 void at_command_update(struct at_command_context*, char);
-bool at_command_deinit(struct at_command_context*);
+void at_command_deinit(struct at_command_context*);
 
 #ifdef __cpusplus
 }

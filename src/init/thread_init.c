@@ -63,11 +63,21 @@ static void _start_app_threads(const struct app_data* app_data)
         enable_led_error(app_data->devs->led);
 }
 
+/**
+ * @author Jin
+ * @brief 
+ * 
+ */
 void threads_init(struct app_data* app_data)
 {
     _init_app_threads(app_data);
 }
 
+/**
+ * @author Jin
+ * @brief 
+ * 
+ */
 void threads_start(const struct app_data* app_data)
 {
     _start_app_threads(app_data);
@@ -76,6 +86,11 @@ void threads_start(const struct app_data* app_data)
         k_thread_join((struct k_thread*)&app_data->app_threads[i], K_FOREVER);
 }
 
+/**
+ * @author Jin
+ * @brief 
+ * 
+ */
 void threads_destoy(const struct app_data* app_data)
 {
     for (int i = 0; i < NUM_APP_THREADS; i++)

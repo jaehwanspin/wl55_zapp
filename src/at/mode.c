@@ -1,5 +1,13 @@
 #include "./mode.h"
 
+/**
+ * @author Jin
+ * @brief 
+ * 
+ * @param argc 
+ * @param argv 
+ * @return int 
+ */
 int at_mode_handler(int argc, char** argv)
 {
     int res = 0;

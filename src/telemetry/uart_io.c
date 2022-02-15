@@ -16,6 +16,11 @@ char format_write_buf[UART_PRINTF_MAX_SIZE] = { 0, };
 
 extern struct app_data app_data;
 
+/**
+ * @author Jin
+ * @brief 
+ * 
+ */
 int uart_print(const struct device* uart_dev, uint8_t* data, size_t size)
 {
      k_mutex_lock(&app_data.uart_output_mtx, K_FOREVER);
@@ -25,6 +30,11 @@ int uart_print(const struct device* uart_dev, uint8_t* data, size_t size)
      return size;
 }
 
+/**
+ * @author Jin
+ * @brief 
+ * 
+ */
 int uart_printf(const struct device* uart_dev, const char* fmt, ...)
 {
      va_list va_args;

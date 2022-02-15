@@ -21,11 +21,21 @@ void app_init(struct app_data* app_data)
     app_data->app_alive = true;
 }
 
+/**
+ * @author Jin
+ * @brief 
+ * 
+ */
 void app_start(const struct app_data* app_data)
 {
     threads_start(app_data);
 }
 
+/**
+ * @author Jin
+ * @brief 
+ * 
+ */
 void app_deinit(const struct app_data* app_data)
 {
 

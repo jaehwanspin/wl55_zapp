@@ -72,6 +72,7 @@ static void _get_uart(struct devices* devs)
 }
 
 /**
+ * @author Jin
  * @brief LoRa device
  * 
  * @param devs 
@@ -82,6 +83,7 @@ static void _get_lora(struct devices* devs)
 }
 
 /**
+ * @author Jin
  * @brief SPI
  * 
  * @param devs 
@@ -92,6 +94,7 @@ static void _get_spi(struct devices* devs)
 }
 
 /**
+ * @author Jin
  * @brief I2C
  * 
  * @param devs 
@@ -102,6 +105,7 @@ static void _get_i2c(struct devices* devs)
 }
 
 /**
+ * @author Jin
  * @brief Get the devices object
  * 
  * @param devs 
@@ -123,6 +127,12 @@ void get_devices(struct app_data* app_data)
     _get_spi(app_data->devs);
 }
 
+/**
+ * @author Jin
+ * @brief 
+ * 
+ * @param led_dev 
+ */
 void enable_led_error(const struct gpio_dt_spec* led_dev)
 {
     while (true)

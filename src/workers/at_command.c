@@ -2,8 +2,9 @@
 #include "../app.h"
 #include "../device/devices.h"
 #include "../telemetry/uart_io.h"
-
 #include "../iface/at_command.h"
+#include "../util/custom_typedefs.h"
+#include "../events/device_callbacks.h"
 
 #include "../at/mode.h"
 #include "../at/retry.h"
@@ -26,25 +27,67 @@
 #include "../at/power.h"
 
 #include <zephyr.h>
+#include <drivers/uart.h>
 
 #include <stdbool.h>
 
+struct k_queue uart_data_que = { 0, };
 struct at_command_context at_cmd_ctx = { 0, };
 
-static void _init_worker()
+/**
+ * @author Jin
+ * @brief 
+ * 
+ */
+static void _init_at_command()
 {
+    at_command_init(&at_cmd_ctx, nullptr);
 
+    at_command_add_cmd(&at_cmd_ctx, "VER", at_ver_handler);
+    // at_command_add_cmd(&at_cmd_ctx, "")
 }
 
+/**
+ * @author Jin
+ * @brief 
+ * 
+ * @param app_data 
+ */
+static void _init_worker(const struct app_data* app_data)
+{
+    k_queue_init(&uart_data_que);
+    _init_at_command();
+
+    uart_irq_callback_user_data_set(app_data->devs->uart,
+                                    uart_irq_callback_handler,
+                                    nullptr);
+                                    
+	uart_irq_rx_enable(app_data->devs->uart);
+}
+
+/**
+ * @author Jin
+ * @brief 
+ * 
+ * @param app_data 
+ */
 static void _loop(const struct app_data* app_data)
 {
-    uart_printf(app_data->devs->uart, "at_command_thread\r\n");
-    k_sleep(K_MSEC(500));
+    char* data = k_queue_get(&uart_data_que, K_FOREVER);
+    uart_print(app_data->devs->uart, data, 1);
+
+    at_command_update(&at_cmd_ctx, *data);
 }
 
+/**
+ * @author Jin
+ * @brief 
+ * 
+ * @param app_data 
+ */
 void worker_at_command_handler(const struct app_data* app_data)
 {
-    _init_worker();
+    _init_worker(app_data);
 
     while (is_app_alive(app_data))
     {
