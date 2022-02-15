@@ -6,7 +6,9 @@ extern "C"
 {
 #endif
 
-void worker_at_command_handler(void);
+struct app_data;
+
+void worker_at_command_handler(const struct app_data*);
 
 #ifdef __cplusplus
 }

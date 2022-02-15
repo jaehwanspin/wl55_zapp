@@ -7,6 +7,14 @@
 #define UART_CONFIG_FLASH_MEM_PAGE 126U
 #define LORA_CONFIG_FLASH_MEM_PAGE 127U
 
+/**
+ * @author Jin
+ * @brief 
+ * 
+ * @param flash_dev 
+ * @param cfg 
+ * @return int -1 FAILED
+ */
 int flash_write_lora_config(const struct device *flash_dev,
                             const struct lora_modem_config *cfg)
 {
@@ -29,6 +37,14 @@ int flash_write_lora_config(const struct device *flash_dev,
     return flash_write_res;
 }
 
+/**
+ * @author Jin
+ * @brief 
+ * 
+ * @param flash_dev 
+ * @param cfg 
+ * @return int 
+ */
 int flash_read_lora_config(const struct device *flash_dev,
                            struct lora_modem_config *cfg)
 {
@@ -51,6 +67,14 @@ int flash_read_lora_config(const struct device *flash_dev,
     return flash_read_res;
 }
 
+/**
+ * @author Jin
+ * @brief 
+ * 
+ * @param flash_dev 
+ * @param cfg 
+ * @return int 
+ */
 int flash_write_uart_config(const struct device *flash_dev,
                             const struct uart_config *cfg)
 {
@@ -73,6 +97,14 @@ int flash_write_uart_config(const struct device *flash_dev,
     return flash_write_res;
 }
 
+/**
+ * @author Jin
+ * @brief 
+ * 
+ * @param flash_dev 
+ * @param cfg 
+ * @return int 
+ */
 int flash_read_uart_config(const struct device *flash_dev,
                            struct uart_config *cfg)
 {

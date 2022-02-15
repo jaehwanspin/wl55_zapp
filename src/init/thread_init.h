@@ -9,6 +9,8 @@ extern "C"
 struct app_data;
 
 void threads_init(struct app_data*);
+void threads_start(const struct app_data*);
+void threads_destoy(const struct app_data*);
 
 #ifdef __cplusplus
 }

@@ -6,7 +6,9 @@ extern "C"
 {
 #endif
 
+struct app_data;
 
+void env_init(struct app_data*);
 
 #ifdef __cplusplus
 }
