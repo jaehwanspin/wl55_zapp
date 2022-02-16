@@ -7,6 +7,7 @@
 #include <memory.h>
 
 /**
+ * @author Jin
  * @brief clears rx buffer
  * 
  * @param ctx 
@@ -18,43 +19,46 @@ static void _at_command_reset_buffer(struct at_command_context* ctx)
 }
 
 /**
+ * @author Jin
  * @brief parses command line from context buffer
  * 
  * @param ctx AT command context
  */
 static void _at_command_parse_cmd(struct at_command_context* ctx)
 {
-    void* addr = strstr(ctx->rx_buffer, ctx->cfg.main_cmd);
-
-    if (ctx->rx_buffer[0] > 'A' &&
-        strstr(ctx->rx_buffer, ctx->cfg.main_cmd) == &ctx->rx_buffer[0])
+    if (ctx->rx_buffer[0] >= 'A' &&
+         strstr(ctx->rx_buffer, ctx->cfg.main_cmd) == ctx->rx_buffer)
     {
         bool found = false;
         int argc = 0;
         char* argv[AT_COMMAND_ARGV_MAX_SIZE] = { 0, };
         char* rx_ptr = ctx->rx_buffer;
-       while (argv[argc++] = strtok_r(rx_ptr, ctx->cfg.main_delim, &rx_ptr));
+
+        argv[argc++] = strtok_r(rx_ptr, ctx->cfg.main_delim, &rx_ptr);
+
+        while (argv[argc++] = strtok_r(rx_ptr, ctx->cfg.sub_delim, &rx_ptr));
+
         argc--;
 
-        for (int i = 0; i < ctx->cmds_size; i++)
-        {
-            if (0 == strcmp(argv[0], ctx->cmds[i].command))
+        if (argc == 1)
+            ctx->cfg.test_handler(argc, argv);
+        else
+            for (int i = 0; i < ctx->cmds_size; i++)
             {
-                found = true;
-                ctx->cmds[i].cb_func(argc, argv);
-                break;
+                if (0 == strcmp(argv[1], ctx->cmds[i].command))
+                {
+                    found = true;
+                    ctx->cmds[i].cb_func(argc, argv);
+                    break;
+                }
             }
-        }
-
-         
     }
-    else
-    {
-        _at_command_reset_buffer(ctx);
-    }
+    
+    _at_command_reset_buffer(ctx);
 }
 
 /**
+ * @author Jin
  * @brief adds buffer and prints what I wrote
  * 
  * @param ctx AT command context
@@ -70,6 +74,7 @@ static void _at_command_add_char_into_buffer(struct at_command_context* ctx, cha
 }
 
 /**
+ * @author Jin
  * @brief constructor
  * 
  * @param ctx AT command context
@@ -149,21 +154,11 @@ void at_command_update(struct at_command_context* ctx, char rx_value)
 {
     switch (rx_value)
     {
-    // case '\b':
-    // {
-    //     _at_command_process_backspace(ctx);
-    //     break;
-    // }
     case '\r':
     {
         _at_command_parse_cmd(ctx);
         break;
     }
-    // case 0x03:
-    // {
-    //     _at_command_process_cancel(ctx);
-    //     break;
-    // }
     default:
     {
         _at_command_add_char_into_buffer(ctx, rx_value);
@@ -173,6 +168,7 @@ void at_command_update(struct at_command_context* ctx, char rx_value)
 }
 
 /**
+ * @author Jin
  * @brief destructor
  * 
  * @param ctx AT command context

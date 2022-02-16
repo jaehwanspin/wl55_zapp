@@ -58,6 +58,7 @@ struct at_command_cfg
     char main_cmd[4];
     char main_delim[2];
     char sub_delim[2];
+    at_command_cb_func_t test_handler;
 };
 
 struct at_command_command

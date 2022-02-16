@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 3.20.0)
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(my_zephyr_app)
 
-set(APP_SRC src/at/ver.c
+set(APP_SRC src/at/test.c
+            src/at/ver.c
             src/at/id.c
             src/at/fdefault.c
             src/at/reset.c

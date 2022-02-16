@@ -16,6 +16,8 @@ size_t uart_rx_buf_pool_pos = 0;
 static uint8_t* _get_available_buf_addr()
 {
     uint8_t* ret = &uart_rx_buf_pool[uart_rx_buf_pool_pos++];
+    if (uart_rx_buf_pool_pos == UART_RX_BUF_POOL_MAX_SIZE)
+        uart_rx_buf_pool_pos = 0;
     return ret;
 }
 

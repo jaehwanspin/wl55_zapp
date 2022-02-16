@@ -25,6 +25,7 @@
 #include "../at/fdefault.h"
 #include "../at/id.h"
 #include "../at/power.h"
+#include "../at/test.h"
 
 #include <zephyr.h>
 #include <drivers/uart.h>
@@ -42,7 +43,7 @@ struct at_command_context at_cmd_ctx = { 0, };
 static void _init_at_command()
 {
     {
-        struct at_command_cfg cfg = { "AT", "+", "," };
+        struct at_command_cfg cfg = { "AT", "+", ",", at_test_handler };
         at_command_init(&at_cmd_ctx, &cfg);
     }
 

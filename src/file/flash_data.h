@@ -8,11 +8,15 @@ extern "C"
 
 struct device;
 struct lora_modem_config;
+struct lorawan_join_config;
 struct uart_config;
 
 
 int flash_write_lora_config(const struct device*, const struct lora_modem_config*);
 int flash_read_lora_config(const struct device*, struct lora_modem_config*);
+
+int flash_write_lorawan_config(const struct device*, const struct lorawan_join_config*);
+int flash_read_lorawan_config(const struct device*, struct lorawan_join_config*);
 
 int flash_write_uart_config(const struct device*, const struct uart_config*);
 int flash_read_uart_config(const struct device*, struct uart_config*);
