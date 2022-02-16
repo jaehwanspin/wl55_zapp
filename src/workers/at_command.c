@@ -41,10 +41,32 @@ struct at_command_context at_cmd_ctx = { 0, };
  */
 static void _init_at_command()
 {
-    at_command_init(&at_cmd_ctx, nullptr);
+    {
+        struct at_command_cfg cfg = { "AT", "+", "," };
+        at_command_init(&at_cmd_ctx, &cfg);
+    }
 
     at_command_add_cmd(&at_cmd_ctx, "VER", at_ver_handler);
-    // at_command_add_cmd(&at_cmd_ctx, "")
+    at_command_add_cmd(&at_cmd_ctx, "FDEFAULT", at_fdefault_handler);
+    at_command_add_cmd(&at_cmd_ctx, "RESET", at_reset_handler);
+    at_command_add_cmd(&at_cmd_ctx, "LOWPOWER", at_low_power_handler);
+    at_command_add_cmd(&at_cmd_ctx, "MSG", at_msg_handler);
+    at_command_add_cmd(&at_cmd_ctx, "MSGHEX", at_msg_hex_handler);
+    at_command_add_cmd(&at_cmd_ctx, "CMSG", at_c_msg_handler);
+    at_command_add_cmd(&at_cmd_ctx, "CMSGHEX", at_c_msg_hex_handler);
+    at_command_add_cmd(&at_cmd_ctx, "PMSG", at_p_msg_handler);
+    at_command_add_cmd(&at_cmd_ctx, "PMSGHEX", at_p_msg_hex_handler);
+    at_command_add_cmd(&at_cmd_ctx, "CH", at_ch_handler);
+    at_command_add_cmd(&at_cmd_ctx, "DR", at_dr_handler);
+    at_command_add_cmd(&at_cmd_ctx, "ADR", at_adr_handler);
+    at_command_add_cmd(&at_cmd_ctx, "REPT", at_rept_handler);
+    at_command_add_cmd(&at_cmd_ctx, "RETRY", at_retry_handler);
+    at_command_add_cmd(&at_cmd_ctx, "POWER", at_power_handler);
+    at_command_add_cmd(&at_cmd_ctx, "PORT", at_port_handler);
+    at_command_add_cmd(&at_cmd_ctx, "MODE", at_mode_handler);
+    at_command_add_cmd(&at_cmd_ctx, "PORT", at_port_handler);
+    at_command_add_cmd(&at_cmd_ctx, "ID", at_id_handler);
+    
 }
 
 /**
@@ -74,8 +96,7 @@ static void _init_worker(const struct app_data* app_data)
 static void _loop(const struct app_data* app_data)
 {
     char* data = k_queue_get(&uart_data_que, K_FOREVER);
-    uart_print(app_data->devs->uart, data, 1);
-
+    // uart_print(app_data->devs->uart, data, 1);
     at_command_update(&at_cmd_ctx, *data);
 }
 

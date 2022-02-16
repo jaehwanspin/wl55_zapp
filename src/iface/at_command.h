@@ -55,8 +55,9 @@ typedef int(*at_command_cb_func_t)(int, char**);
 
 struct at_command_cfg
 {
-    char prompt[AT_COMMAND_PROMPT_MAX_SIZE];
-    char error_msg[AT_COMMAND_ERROR_MSG_MAX_SIZE];
+    char main_cmd[4];
+    char main_delim[2];
+    char sub_delim[2];
 };
 
 struct at_command_command

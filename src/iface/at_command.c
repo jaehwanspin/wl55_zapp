@@ -2,6 +2,7 @@
 
 #include "../util/custom_typedefs.h"
 
+#include <inttypes.h>
 #include <string.h>
 #include <memory.h>
 
@@ -17,48 +18,22 @@ static void _at_command_reset_buffer(struct at_command_context* ctx)
 }
 
 /**
- * @brief prints prompt( ex. "command> " )
- * 
- * @param ctx AT command context
- */
-static void _at_command_print_prompt(struct at_command_context* ctx)
-{
-    // uart_print(ctx->cfg.prompt);
-    // uart_print("\r\n");
-}
-
-/**
- * @brief prints error ( ex. "command : not found" )
- * 
- * @param ctx AT command context
- * @param cmd command string
- */
-static void _at_command_print_error(struct at_command_context* ctx, char* cmd)
-{
-    // printf("%s : %s\r\n", cmd, ctx->cfg.error_msg);
-    // uart_print(cmd);
-    // uart_print(" : ");
-    // uart_print(ctx->cfg.error_msg);
-    // uart_print("\r\n");
-}
-
-/**
  * @brief parses command line from context buffer
  * 
  * @param ctx AT command context
  */
 static void _at_command_parse_cmd(struct at_command_context* ctx)
 {
-    if (ctx->rx_buffer[0])
+    void* addr = strstr(ctx->rx_buffer, ctx->cfg.main_cmd);
+
+    if (ctx->rx_buffer[0] > 'A' &&
+        strstr(ctx->rx_buffer, ctx->cfg.main_cmd) == &ctx->rx_buffer[0])
     {
         bool found = false;
         int argc = 0;
-        char* argv[AT_COMMAND_ARGV_MAX_SIZE] = {  { 0, }, };
+        char* argv[AT_COMMAND_ARGV_MAX_SIZE] = { 0, };
         char* rx_ptr = ctx->rx_buffer;
-
-        // uart_print("\r\n");
-
-        while (argv[argc++] = strtok_r(rx_ptr, " ", &rx_ptr));
+       while (argv[argc++] = strtok_r(rx_ptr, ctx->cfg.main_delim, &rx_ptr));
         argc--;
 
         for (int i = 0; i < ctx->cmds_size; i++)
@@ -71,42 +46,12 @@ static void _at_command_parse_cmd(struct at_command_context* ctx)
             }
         }
 
-        if (!found)
-            _at_command_print_error(ctx, argv[0]);
+         
+    }
+    else
+    {
         _at_command_reset_buffer(ctx);
     }
-    // else
-        // uart_print("\r\n");
-
-    _at_command_print_prompt(ctx);
-}
-
-/**
- * @author Jin
- * @brief removes buffer
- * 
- * @param ctx AT command context
- */
-static void _at_command_process_backspace(struct at_command_context* ctx)
-{
-    if (ctx->rx_buffer_size)
-    {
-        ctx->rx_buffer[ctx->rx_buffer_size - 1] = 0;
-        ctx->rx_buffer_size--;
-        // uart_print("\b \b\x1B[1P");
-    }
-}
-
-/**
- * @brief prints cancel and new line and clears buffer
- * 
- * @param ctx 
- */
-static void _at_command_process_cancel(struct at_command_context* ctx)
-{
-    // uart_print("^C\r\n");
-    _at_command_reset_buffer(ctx);
-    _at_command_print_prompt(ctx);
 }
 
 /**
@@ -120,8 +65,7 @@ static void _at_command_add_char_into_buffer(struct at_command_context* ctx, cha
     if (ctx->rx_buffer_size < AT_COMMAND_RX_BUFFER_MAX_SIZE)
     {
         ctx->rx_buffer[ctx->rx_buffer_size++] = single_buffer;
-        char out_char[2] = { single_buffer, 0 };
-        uart_print(out_char);
+        ctx->rx_buffer[ctx->rx_buffer_size] = 0;
     }
 }
 
@@ -136,7 +80,7 @@ static void _at_command_add_char_into_buffer(struct at_command_context* ctx, cha
 bool at_command_init(struct at_command_context* ctx, struct at_command_cfg* cfg)
 {
     bool res = false;
-    if (cfg != nullptr && cfg->error_msg && cfg->prompt)
+    if (cfg != nullptr && cfg->main_delim && cfg->sub_delim)
     {
         memcpy(&ctx->cfg, cfg, sizeof(struct at_command_cfg));
     }
@@ -205,21 +149,21 @@ void at_command_update(struct at_command_context* ctx, char rx_value)
 {
     switch (rx_value)
     {
-    case '\b':
-    {
-        _at_command_process_backspace(ctx);
-        break;
-    }
+    // case '\b':
+    // {
+    //     _at_command_process_backspace(ctx);
+    //     break;
+    // }
     case '\r':
     {
         _at_command_parse_cmd(ctx);
         break;
     }
-    case 0x03:
-    {
-        _at_command_process_cancel(ctx);
-        break;
-    }
+    // case 0x03:
+    // {
+    //     _at_command_process_cancel(ctx);
+    //     break;
+    // }
     default:
     {
         _at_command_add_char_into_buffer(ctx, rx_value);
