@@ -6,6 +6,7 @@
 #include "../util/custom_typedefs.h"
 
 #include <string.h>
+#include <stdio.h>
 
 // from src/main.c
 extern struct app_data app_data;

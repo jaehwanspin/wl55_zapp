@@ -31,43 +31,47 @@
 #include <drivers/uart.h>
 
 #include <stdbool.h>
+#include <string.h>
 
 struct k_queue uart_data_que = { 0, };
 struct at_command_context at_cmd_ctx = { 0, };
 
+struct at_command_command at_cmds[] = {
+    { "VER", at_ver_handler},
+    { "FDEFAULT", at_fdefault_handler},
+    { "RESET", at_reset_handler},
+    { "LOWPOWER", at_low_power_handler},
+    { "MSG", at_msg_handler},
+    { "MSGHEX", at_msg_hex_handler},
+    { "CMSG", at_c_msg_handler},
+    { "CMSGHEX", at_c_msg_hex_handler},
+    { "PMSG", at_p_msg_handler},
+    { "PMSGHEX", at_p_msg_hex_handler},
+    { "CH", at_ch_handler},
+    { "DR", at_dr_handler},
+    { "ADR", at_adr_handler},
+    { "REPT", at_rept_handler},
+    { "RETRY", at_retry_handler},
+    { "POWER", at_power_handler},
+    { "PORT", at_port_handler},
+    { "MODE", at_mode_handler},
+    { "PORT", at_port_handler},
+    { "ID", at_id_handler},
+};
+
 /**
+
  * @author Jin
  * @brief 
  * 
  */
 static void _init_at_command()
 {
-    {
-        struct at_command_cfg cfg = { "AT", "+", ",", at_test_handler };
-        at_command_init(&at_cmd_ctx, &cfg);
-    }
+    struct at_command_cfg cfg = { "AT", "+", "=", at_test_handler };
+    at_command_init(&at_cmd_ctx, &cfg);
 
-    at_command_add_cmd(&at_cmd_ctx, "VER", at_ver_handler);
-    at_command_add_cmd(&at_cmd_ctx, "FDEFAULT", at_fdefault_handler);
-    at_command_add_cmd(&at_cmd_ctx, "RESET", at_reset_handler);
-    at_command_add_cmd(&at_cmd_ctx, "LOWPOWER", at_low_power_handler);
-    at_command_add_cmd(&at_cmd_ctx, "MSG", at_msg_handler);
-    at_command_add_cmd(&at_cmd_ctx, "MSGHEX", at_msg_hex_handler);
-    at_command_add_cmd(&at_cmd_ctx, "CMSG", at_c_msg_handler);
-    at_command_add_cmd(&at_cmd_ctx, "CMSGHEX", at_c_msg_hex_handler);
-    at_command_add_cmd(&at_cmd_ctx, "PMSG", at_p_msg_handler);
-    at_command_add_cmd(&at_cmd_ctx, "PMSGHEX", at_p_msg_hex_handler);
-    at_command_add_cmd(&at_cmd_ctx, "CH", at_ch_handler);
-    at_command_add_cmd(&at_cmd_ctx, "DR", at_dr_handler);
-    at_command_add_cmd(&at_cmd_ctx, "ADR", at_adr_handler);
-    at_command_add_cmd(&at_cmd_ctx, "REPT", at_rept_handler);
-    at_command_add_cmd(&at_cmd_ctx, "RETRY", at_retry_handler);
-    at_command_add_cmd(&at_cmd_ctx, "POWER", at_power_handler);
-    at_command_add_cmd(&at_cmd_ctx, "PORT", at_port_handler);
-    at_command_add_cmd(&at_cmd_ctx, "MODE", at_mode_handler);
-    at_command_add_cmd(&at_cmd_ctx, "PORT", at_port_handler);
-    at_command_add_cmd(&at_cmd_ctx, "ID", at_id_handler);
-    
+    memcpy(&at_cmd_ctx.cmds[0], &at_cmds[0], sizeof(at_cmds));
+    at_cmd_ctx.cmds_size = sizeof(at_cmds) / sizeof(struct at_command_command);
 }
 
 /**

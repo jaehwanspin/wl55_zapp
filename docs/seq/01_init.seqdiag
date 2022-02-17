@@ -1,0 +1,7 @@
+participant main as main
+participant app as app
+participant dev_init as di
+participant devices as devs
+
+main -> app     : entrance
+app -> devs     : get devices

@@ -27,6 +27,7 @@ struct devices
 void get_devices(struct app_data*);
 
 void enable_led_error(const struct gpio_dt_spec*);
+void disable_led_error(const struct gpio_dt_spec*);
 
 #ifdef __cplusplus
 }

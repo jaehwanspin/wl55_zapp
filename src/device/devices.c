@@ -137,7 +137,18 @@ void enable_led_error(const struct gpio_dt_spec* led_dev)
 {
     while (true)
     {
-        gpio_pin_toggle(led_dev->port, led_dev->pin);
+        gpio_pin_set(led_dev->port, led_dev->pin, 1);
         k_sleep(K_MSEC(200));
     }
+}
+
+/**
+ * @author Jin
+ * @brief 
+ * 
+ * @param led_dev 
+ */
+void disable_led_error(const struct gpio_dt_spec* led_dev)
+{
+    gpio_pin_set(led_dev->port, led_dev->pin, 0);
 }

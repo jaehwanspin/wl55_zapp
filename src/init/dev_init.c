@@ -7,6 +7,8 @@
 #include <drivers/flash.h>
 #include <drivers/lora.h>
 
+#include <lorawan/lorawan.h>
+
 #include <stdbool.h>
 
 /**
@@ -24,6 +26,17 @@ static void _set_default_lora_config(struct lora_modem_config* cfg)
     cfg->coding_rate = CR_4_5;
     cfg->tx_power = 14;
     cfg->tx = true;
+}
+
+/**
+ * @author Jin
+ * @brief sets to default LoRaWAN join options
+ * 
+ * @param cfg 
+ */
+static void _set_default_lorawan_config(struct lorawan_join_config* cfg)
+{
+    
 }
 
 /**
@@ -178,6 +191,13 @@ static void _lora_init(const struct devices* devs)
     {
         enable_led_error(devs->led);
     }
+
+    init_res = flash_write_lora_config(devs->flash, &cfg);
+
+    if (init_res < 0)
+    {
+        enable_led_error(devs->led);
+    }
 }
 
 /**
@@ -202,6 +222,24 @@ static void _uart_init(const struct devices* devs)
     {
         enable_led_error(devs->led);
     }
+
+    init_res = flash_write_uart_config(devs->flash, &cfg);
+
+    if (init_res < 0)
+    {
+        enable_led_error(devs->led);
+    }
+}
+
+/**
+ * @author Jin
+ * @brief disable LED output
+ * 
+ * @param devs 
+ */
+static void _gpio_init(const struct devices* devs)
+{
+    disable_led_error(devs->led);
 }
 
 /**
@@ -212,6 +250,7 @@ static void _uart_init(const struct devices* devs)
  */
 void dev_init(const struct devices* devs)
 {
+    _gpio_init(devs);
     _flash_mem_init(devs);
     _uart_init(devs);
     _lora_init(devs);

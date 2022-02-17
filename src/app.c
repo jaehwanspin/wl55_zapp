@@ -38,7 +38,7 @@ void app_start(const struct app_data* app_data)
  */
 void app_deinit(const struct app_data* app_data)
 {
-
+    threads_destoy(app_data);
 }
 
 /**
