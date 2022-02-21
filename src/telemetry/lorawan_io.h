@@ -1,5 +1,5 @@
-#ifndef __TELEMETRY_LORA_IO_H__
-#define __TELEMETRY_LORA_IO_H__
+#ifndef __TELEMETRY_LORAWAN_IO_H__
+#define __TELEMETRY_LORAWAN_IO_H__
 
 #ifdef __cplusplus
 extern "C"
@@ -17,7 +17,7 @@ struct device;
 struct lorawan_data
 {
     uint8_t port;
-    bool data_pending;
+    bool    data_pending;
     uint8_t data[TELEMETRY_LORAWAN_DATA_MAX_LEN];
     size_t  size;
     int16_t rssi; // out

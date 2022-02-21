@@ -9,7 +9,6 @@
 
 // from workers/at_command.c
 extern struct k_queue uart_data_que;
-extern struct k_queue lorawan_data_que;
 
 // from workers/lorawan.c
 extern struct k_queue lorawan_data_que;
