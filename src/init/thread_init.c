@@ -5,6 +5,7 @@
 
 #include "../workers/at_command.h"
 #include "../workers/event.h"
+#include "../workers/lorawan.h"
 
 #include <zephyr.h>
 #include <device.h>
@@ -15,7 +16,8 @@
 #define AT_COMMAND_THREAD_IDX  1
 #define AT_COMMAND_THREAD_PRIO 11
 
-// static struct z_thread_stack_element app_thread_stacks[NUM_APP_THREADS][APP_THREAD_STACK_SIZE + 32] = { };
+#define LORAWAN_THREAD_IDX     2
+#define LORAWAN_THREAD_PRIO    12
 
 /**
  * @author Jin
@@ -56,6 +58,18 @@ static void _start_app_threads(const struct app_data* app_data)
                           (k_thread_entry_t)worker_event_handler,
                           (void*)app_data, nullptr, nullptr,
                           EVENT_THREAD_PRIO,
+                          0,
+                          K_NO_WAIT);
+
+    if (tid == nullptr)
+        enable_led_error(app_data->devs->led);
+
+    tid = k_thread_create((struct k_thread*)&app_data->app_threads[LORAWAN_THREAD_IDX],
+                          (struct z_thread_stack_element*)app_data->app_thread_stacks[LORAWAN_THREAD_IDX],
+                          APP_THREAD_STACK_SIZE,
+                          (k_thread_entry_t)worker_lorawan_handler,
+                          (void*)app_data, nullptr, nullptr,
+                          LORAWAN_THREAD_PRIO,
                           0,
                           K_NO_WAIT);
 

@@ -2,10 +2,15 @@
 #include "../app.h"
 #include "../device/devices.h"
 #include "../telemetry/uart_io.h"
+#include "../telemetry/lora_io.h"
+
 
 #include <zephyr.h>
 
 #include <stdbool.h>
+
+// from events/device_callback.c
+extern struct lora_data lora_recv_data;
 
 /**
  * @author Jin
@@ -33,7 +38,7 @@ static void _loop(const struct app_data* app_data)
  * @brief 
  * 
  */
-void worker_lorawa_handler(const struct app_data* app_data)
+void worker_lorawan_handler(const struct app_data* app_data)
 {
     _init_worker();
 

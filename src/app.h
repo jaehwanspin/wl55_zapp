@@ -12,6 +12,7 @@ extern "C"
 #include <zephyr.h>
 
 struct devices;
+struct lorawan_join_config;
 
 #ifndef NUM_APP_THREADS
 #define NUM_APP_THREADS 3
@@ -29,6 +30,7 @@ struct app_data
     struct z_thread_stack_element app_thread_stacks[NUM_APP_THREADS][APP_THREAD_STACK_SIZE + 32];
     size_t                         num_app_threads;
 
+    struct lorawan_join_config*    lorawan_cfg;
     struct k_mutex                 uart_output_mtx;
 
     bool                           app_alive;

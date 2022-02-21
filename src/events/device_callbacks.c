@@ -5,6 +5,8 @@
 #include <drivers/uart.h>
 #include <drivers/lora.h>
 
+#include <string.h>
+
 // from workers/at_command.c
 extern struct k_queue uart_data_que;
 
@@ -49,10 +51,15 @@ void uart_irq_callback_handler(const struct device* uart_dev, void* user_data)
  * @brief 
  * 
  */
-struct lora_data recv_data = { 0, };
+struct lora_data lora_recv_data = { 0, };
 void lora_recv_callback_handler(const struct device* lora_dev, uint8_t* data,
                                 uint16_t size, int16_t rssi, int8_t snr)
 {
+    memcpy(lora_recv_data.data, data, size);
+    lora_recv_data.size = size;
+    lora_recv_data.rssi = rssi;
+    lora_recv_data.snr = snr;
+
     
 }
 

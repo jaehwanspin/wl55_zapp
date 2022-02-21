@@ -1,4 +1,5 @@
 #include "./dev_init.h"
+#include "../app.h"
 #include "../device/devices.h"
 #include "../file/flash_data.h"
 
@@ -28,6 +29,13 @@ static void _set_default_lora_config(struct lora_modem_config* cfg)
     cfg->tx = true;
 }
 
+
+uint8_t default_dev_eui[] = { 0xDD, 0xEE, 0xAA, 0xDD, 0xBB, 0xEE, 0xEE, 0xFF };
+uint8_t default_join_eui[] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+uint8_t default_app_key[] = { 0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE,
+                              0xD2, 0xA6, 0xAB, 0xF7, 0x15, 0x88,
+                              0x09, 0xCF, 0x4F, 0x3C };
+
 /**
  * @author Jin
  * @brief sets to default LoRaWAN join options
@@ -36,7 +44,11 @@ static void _set_default_lora_config(struct lora_modem_config* cfg)
  */
 static void _set_default_lorawan_config(struct lorawan_join_config* cfg)
 {
-    
+    cfg->mode = LORAWAN_ACT_OTAA;
+    cfg->dev_eui = default_dev_eui;
+    cfg->otaa.join_eui = default_join_eui;
+    cfg->otaa.app_key = default_app_key;
+    cfg->otaa.nwk_key = default_app_key;
 }
 
 /**
@@ -70,6 +82,16 @@ static void _parse_lora_options(const struct device* flash_dev,
                                 const struct gpio_dt_spec* err_led)
 {
     int flash_read_res = flash_read_lora_config(flash_dev, out_cfg);
+
+    if (flash_read_res < 0)
+        enable_led_error(err_led);
+}
+
+static void _parse_lorawan_options(const struct device* flash_dev,
+                                   struct lorawan_join_config* cfg,
+                                   const struct gpio_dt_spec* err_led)
+{
+    int flash_read_res = flash_read_lorawan_config(flash_dev, cfg);
 
     if (flash_read_res < 0)
         enable_led_error(err_led);
@@ -159,6 +181,25 @@ static bool _validate_uart_options(const struct uart_config* cfg)
 
 /**
  * @author Jin
+ * @brief 
+ * 
+ * @param cfg 
+ * @return true 
+ * @return false 
+ */
+static bool _validate_lorawan_options(const struct lorawan_join_config* cfg)
+{
+    bool res = true;
+
+    if (cfg->mode != LORAWAN_ACT_OTAA ||
+        cfg->mode != LORAWAN_ACT_ABP)
+        res = false;
+
+    return res;
+}
+
+/**
+ * @author Jin
  * @brief Nothing to do
  * 
  * @param devs 
@@ -231,6 +272,21 @@ static void _uart_init(const struct devices* devs)
     }
 }
 
+struct lorawan_join_config lorawan_cfg = { 0, };
+/**
+ * @author Jin
+ * @brief 
+ * 
+ * @param devs 
+ */
+static void _lorawan_init(const struct devices* devs)
+{
+    _parse_lorawan_options(devs->flash, &lorawan_cfg, devs->led);
+
+    if (!_validate_lorawan_options(&lorawan_cfg))
+        _set_default_lorawan_config(&lorawan_cfg);    
+}
+
 /**
  * @author Jin
  * @brief disable LED output
@@ -241,6 +297,9 @@ static void _gpio_init(const struct devices* devs)
 {
     disable_led_error(devs->led);
 }
+
+// from main.c
+extern struct app_data app_data;
 
 /**
  * @author Jin
@@ -254,4 +313,6 @@ void dev_init(const struct devices* devs)
     _flash_mem_init(devs);
     _uart_init(devs);
     _lora_init(devs);
+    _lorawan_init(devs);
+    app_data.lorawan_cfg = &lorawan_cfg;
 }
