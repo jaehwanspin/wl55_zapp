@@ -10,16 +10,44 @@
 // from workers/at_command.c
 extern struct k_queue uart_data_que;
 
+// from workers/lorawan.c
+extern struct k_queue lorawan_data_que;
+
 #define UART_RX_BUF_POOL_MAX_SIZE 512
 
 uint8_t uart_rx_buf_pool[UART_RX_BUF_POOL_MAX_SIZE] = { 0, };
 size_t uart_rx_buf_pool_pos = 0;
 
+#define LORAWAN_RX_DATA_POOL_MAX_SIZE 512
+
+struct lorawan_data lorawan_rx_data_pool[LORAWAN_RX_DATA_POOL_MAX_SIZE] = { 0, };
+size_t lorawan_rx_data_pool_pos = 0;
+
+/**
+ * @author Jin
+ * @brief 
+ * 
+ * @return uint8_t* 
+ */
 static uint8_t* _get_available_buf_addr()
 {
     uint8_t* ret = &uart_rx_buf_pool[uart_rx_buf_pool_pos++];
     if (uart_rx_buf_pool_pos == UART_RX_BUF_POOL_MAX_SIZE)
         uart_rx_buf_pool_pos = 0;
+    return ret;
+}
+
+/**
+ * @author Jin
+ * @brief 
+ * 
+ * @return struct lorawan_data* 
+ */
+static struct lorawan_data* _get_available_data_addr()
+{
+    uint8_t* ret = &lorawan_rx_data_pool[lorawan_rx_data_pool_pos++];
+    if (lorawan_rx_data_pool_pos == LORAWAN_RX_DATA_POOL_MAX_SIZE)
+        lorawan_rx_data_pool_pos = 0;
     return ret;
 }
 
@@ -51,15 +79,18 @@ void uart_irq_callback_handler(const struct device* uart_dev, void* user_data)
  * @brief 
  * 
  */
-struct lora_data lora_recv_data = { 0, };
-void lora_recv_callback_handler(const struct device* lora_dev, uint8_t* data,
+void lora_recv_callback_handler(uint8_t port, bool data_pending,
+                                const struct device* lora_dev, uint8_t* data,
                                 uint16_t size, int16_t rssi, int8_t snr)
 {
-    memcpy(lora_recv_data.data, data, size);
-    lora_recv_data.size = size;
-    lora_recv_data.rssi = rssi;
-    lora_recv_data.snr = snr;
+    struct lorawan_data* lora_recv_data = _get_available_data_addr();
+    memcpy(lora_recv_data->data, data, size);
+    lora_recv_data->port = port;
+    lora_recv_data->data_pending = data_pending;
+    lora_recv_data->size = size;
+    lora_recv_data->rssi = rssi;
+    lora_recv_data->snr = snr;
 
-    
+    k_queue_append(&lorawan_data_que, lora_recv_data);
 }
 

@@ -10,7 +10,7 @@
 #include <stdbool.h>
 
 // from events/device_callback.c
-extern struct lora_data lora_recv_data;
+extern struct lorawan_data lora_recv_data;
 
 /**
  * @author Jin
