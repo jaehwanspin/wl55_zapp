@@ -4,13 +4,11 @@
 #include "../telemetry/uart_io.h"
 #include "../telemetry/lora_io.h"
 
-
 #include <zephyr.h>
 
 #include <stdbool.h>
 
-// from events/device_callback.c
-extern struct lorawan_data lora_recv_data;
+struct k_queue lorawan_data_que;
 
 /**
  * @author Jin
@@ -19,7 +17,7 @@ extern struct lorawan_data lora_recv_data;
  */
 static void _init_worker()
 {
-    
+    k_queue_init(&lorawan_data_que);
 }
 
 /**
@@ -29,8 +27,9 @@ static void _init_worker()
  */
 static void _loop(const struct app_data* app_data)
 {
-    // uart_printf(app_data->devs->uart, "event_thread\r\n");
-    k_sleep(K_MSEC(500));
+    struct lorawan_data* data = k_queue_get(&lorawan_data_que, K_FOREVER);
+
+    
 }
 
 /**
