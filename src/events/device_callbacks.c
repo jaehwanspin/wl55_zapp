@@ -9,6 +9,7 @@
 
 // from workers/at_command.c
 extern struct k_queue uart_data_que;
+extern struct k_queue lorawan_data_que;
 
 #define UART_RX_BUF_POOL_MAX_SIZE 512
 
