@@ -30,7 +30,7 @@ set(APP_SRC src/at/test.c
             src/init/dev_init.c
             src/init/env_init.c
             src/init/thread_init.c
-            src/telemetry/lora_io.c
+            src/telemetry/lorawan_io.c
             src/telemetry/uart_io.c
             src/util/custom_typedefs.c
             src/workers/at_command.c

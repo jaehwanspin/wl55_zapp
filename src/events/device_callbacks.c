@@ -1,4 +1,4 @@
-#include "../telemetry/lora_io.h"
+#include "../telemetry/lorawan_io.h"
 #include "../util/custom_typedefs.h"
 
 #include <zephyr.h>
@@ -45,7 +45,7 @@ static uint8_t* _get_available_buf_addr()
  */
 static struct lorawan_data* _get_available_data_addr()
 {
-    uint8_t* ret = &lorawan_rx_data_pool[lorawan_rx_data_pool_pos++];
+    struct lorawan_data* ret = &lorawan_rx_data_pool[lorawan_rx_data_pool_pos++];
     if (lorawan_rx_data_pool_pos == LORAWAN_RX_DATA_POOL_MAX_SIZE)
         lorawan_rx_data_pool_pos = 0;
     return ret;
@@ -76,10 +76,10 @@ void uart_irq_callback_handler(const struct device* uart_dev, void* user_data)
 
 /**
  * @author Jin
- * @brief 
+ * @brief LoRaWAN data receive callback
  * 
  */
-void lora_recv_callback_handler(uint8_t port, bool data_pending,
+void lorawan_recv_callback_handler(uint8_t port, bool data_pending,
                                 const struct device* lora_dev, uint8_t* data,
                                 uint16_t size, int16_t rssi, int8_t snr)
 {

@@ -6,8 +6,13 @@ extern "C"
 {
 #endif
 
+enum lorawan_datarate;
+
 void uart_irq_callback_handler(const struct device*, void*);
-void lora_recv_callback_handler(const struct device*, uint8_t*, uint16_t, int16_t, int8_t);
+void lorawan_recv_callback_handler(uint8_t, uint8_t, const struct device*, uint8_t*,
+                                   uint16_t, int16_t, int8_t);
+
+void lorawan_datarate_changed_callback_handler(enum lorawan_datarate);
 
 #ifdef __cplusplus
 }
