@@ -1,10 +1,15 @@
 #include "./at_command.h"
+#include "../app.h"
+// #include "../telemetry/uart_io.h"
 
 #include "../util/custom_typedefs.h"
 
 #include <inttypes.h>
 #include <string.h>
 #include <memory.h>
+
+// from src/main.c
+extern struct app_data app_data;
 
 /**
  * @author Jin
@@ -53,6 +58,13 @@ static void _at_command_parse_cmd(struct at_command_context* ctx)
                 }
             }
     }
+    // else
+    // {
+    //     char err_msg[64] = { 0, };
+
+
+    //     uart_print()
+    // }
     
     _at_command_reset_buffer(ctx);
 }
@@ -154,6 +166,7 @@ void at_command_update(struct at_command_context* ctx, char rx_value)
 {
     switch (rx_value)
     {
+    case '\n':
     case '\r':
     {
         _at_command_parse_cmd(ctx);

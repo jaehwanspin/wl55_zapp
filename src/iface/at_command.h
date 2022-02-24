@@ -32,7 +32,7 @@ extern "C"
 #endif
 
 #ifndef AT_COMMAND_RX_BUFFER_MAX_SIZE
-#define AT_COMMAND_RX_BUFFER_MAX_SIZE (size_t)32U
+#define AT_COMMAND_RX_BUFFER_MAX_SIZE (size_t)528U
 #endif
 
 #ifndef AT_COMMAND_PROMPT_MAX_SIZE
@@ -81,6 +81,16 @@ bool at_command_add_cmd(struct at_command_context*, const char*, at_command_cb_f
 bool at_command_remove_cmd(struct at_command_context*, const char*);
 void at_command_update(struct at_command_context*, char);
 void at_command_deinit(struct at_command_context*);
+
+#define AT_COMMAND_ERR_INVALID_PARAM            -1  // Parameters is invalid
+#define AT_COMMAND_ERR_UNKOWN_COMMAND           -10 // Command unknown
+#define AT_COMMAND_ERR_WRONG_FORMAT_COMMAND     -11 // Command is in wrong format
+#define AT_COMMAND_ERR_UNAVAILABLE_IN_CURR_MODE -12 // Command is unavailable in current mode (Check with "AT+MODE")
+#define AT_COMMAND_ERR_TOO_MANY_PARAMS          -20 // Too many parameters. LoRaWAN modem support max 15 parameters
+#define AT_COMMAND_ERR_TOO_LONG_BUF             -21 // Length of command is too long (exceed 528 bytes)
+#define AT_COMMAND_ERR_END_SYM_TIMEOUT          -22 // Receive end symbol timeout, command must end with <LF>
+#define AT_COMMAND_ERR_INVALID_CHARACTER        -23 // Invalid character received
+#define AT_COMMAND_ERR_EITHER_21_22_23          -24 // Either -21, -22 or -23
 
 #ifdef __cpusplus
 }
