@@ -35,7 +35,7 @@ struct program_options_context
     struct program_options_option* options;
 };
 
-void program_options_init(struct program_options_context*, int, char**);
+void program_options_init(struct program_options_context*, int, char**, const char*, const char*);
 bool program_options_add_options(struct program_options_context*, size_t, struct program_options_option*);
 bool program_options_find_uint(struct program_options_context*, const char*, uint32_t*);
 bool program_options_find_int(struct program_options_context*, const char*, int32_t*);

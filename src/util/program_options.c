@@ -1,6 +1,16 @@
 #include "./program_options.h"
 
+#include <stddef.h>
+#include <stdint.h>
 #include <string.h>
+#include <memory.h>
+
+#define NEW_ARGV_MAX_SIZE (size_t)64U
+#define NEW_ARGVS_MAX_SIZE (size_t)32U
+
+static size_t new_argvs_idx = 0;
+
+char* new_argv[NEW_ARGVS_MAX_SIZE][NEW_ARGV_MAX_SIZE];
 
 /**
  * @author Jin
@@ -36,10 +46,24 @@ static int _find_option(struct program_options_context* ctx,
  * @param argv 
  */
 void program_options_init(struct program_options_context* ctx,
-                          int argc, char** argv)
+                          int argc, char** argv,
+                          const char* main_delim, const char* sub_delim)
 {
-    ctx->argc = argc;
-    ctx->argv = argv;
+    if (argv[2] != nullptr)
+    {
+        int argc = 0;
+        char* str_ptr = argv[2];
+
+        argv[argc++] = strtok(str_ptr, main_delim);
+
+
+        ctx->argc = argc;
+        ctx->argv = argv;
+
+        new_argvs_idx++;
+        if (new_argvs_idx > NEW_ARGVS_MAX_SIZE)
+            new_argvs_idx = 0;
+    }
 }
 
 /**
