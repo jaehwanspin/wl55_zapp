@@ -2,20 +2,29 @@
 
 #include <string.h>
 
-static bool _find_option(struct program_options_context* ctx,
+/**
+ * @author Jin
+ * @brief 
+ * 
+ * @param ctx 
+ * @param option 
+ * @return int 
+ */
+static int _find_option(struct program_options_context* ctx,
                          const char* option)
 {
-    bool res = false;
+    int found_idx = -1;
 
     for (int i = 0; i < ctx->options_count; i++)
     {
         for (int j = 0; j < ctx->argc; j++)
         {
+            volatile void* fucking = 0;
             
         }
     }
 
-    return res;
+    return found_idx;
 }
 
 /**
@@ -38,9 +47,8 @@ void program_options_init(struct program_options_context* ctx,
  * @brief 
  * 
  * @param ctx 
- * @param option 
- * @param has_value 
- * @param value_type 
+ * @param options_size 
+ * @param options 
  * @return true 
  * @return false 
  */
@@ -48,8 +56,16 @@ bool program_options_add_options(struct program_options_context* ctx,
                                  size_t options_size,
                                  struct program_options_option* options)
 {
-    ctx->options_count = options_size;
-    ctx->options = options;
+    bool res = false;
+
+    if (ctx != nullptr && options != nullptr)
+    {
+        ctx->options_count = options_size;
+        ctx->options = options;
+        res = true;
+    }
+
+    return res;
 }
 
 /**
@@ -65,7 +81,10 @@ bool program_options_add_options(struct program_options_context* ctx,
 bool program_options_find_uint(struct program_options_context* ctx,
                                const char* option, uint32_t* value)
 {
+    bool found = false;
 
+
+    return found;
 }
 
 /**
@@ -81,7 +100,9 @@ bool program_options_find_uint(struct program_options_context* ctx,
 bool program_options_find_int(struct program_options_context* ctx,
                               const char* option, int32_t* value)
 {
+    bool found = false;
 
+    return found;
 }
 
 /**
@@ -97,5 +118,7 @@ bool program_options_find_int(struct program_options_context* ctx,
 bool program_options_find_string(struct program_options_context* ctx,
                                  const char* option, char* value)
 {
+    bool found = false;
 
+    return found;
 }
