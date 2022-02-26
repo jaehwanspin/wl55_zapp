@@ -5,36 +5,30 @@
 #include <string.h>
 #include <memory.h>
 
-#define NEW_ARGV_MAX_SIZE (size_t)64U
-#define NEW_ARGVS_MAX_SIZE (size_t)32U
+#define _PARSED_KEY_VAL_MAX_SIZE (size_t)16U
+struct _program_options_parsed
+{
+    size_t    size;
+    str8_8_t  key[_PARSED_KEY_VAL_MAX_SIZE];
+    str8_64_t val[_PARSED_KEY_VAL_MAX_SIZE];
+};
 
-static size_t new_argvs_idx = 0;
-
-char* new_argv[NEW_ARGVS_MAX_SIZE][NEW_ARGV_MAX_SIZE];
+#define NEW_PARSEDS_MAX_SIZE (size_t)64U
+static struct _program_options_parsed new_parseds[NEW_PARSEDS_MAX_SIZE];
+static size_t new_parseds_idx = 0;
 
 /**
  * @author Jin
  * @brief 
  * 
- * @param ctx 
- * @param option 
- * @return int 
+ * @return struct _program_options_parsed* 
  */
-static int _find_option(struct program_options_context* ctx,
-                         const char* option)
+static struct _program_options_parsed* _get_new_parsed()
 {
-    int found_idx = -1;
-
-    for (int i = 0; i < ctx->options_count; i++)
-    {
-        for (int j = 0; j < ctx->argc; j++)
-        {
-            volatile void* fucking = 0;
-            
-        }
-    }
-
-    return found_idx;
+    struct _program_options_parsed* res = &new_parseds[new_parseds_idx++];
+    if (new_parseds_idx == NEW_PARSEDS_MAX_SIZE)
+        new_parseds_idx = 0;
+    return res;
 }
 
 /**
@@ -45,24 +39,12 @@ static int _find_option(struct program_options_context* ctx,
  * @param argc 
  * @param argv 
  */
-void program_options_init(struct program_options_context* ctx,
-                          int argc, char** argv,
-                          const char* main_delim, const char* sub_delim)
+static void _parse_args(struct program_options_context* ctx,
+                        int argc, char** argv)
 {
-    if (argv[2] != nullptr)
+    for (int i = 0; i < argc; i++)
     {
-        int argc = 0;
-        char* str_ptr = argv[2];
-
-        argv[argc++] = strtok(str_ptr, main_delim);
-
-
-        ctx->argc = argc;
-        ctx->argv = argv;
-
-        new_argvs_idx++;
-        if (new_argvs_idx > NEW_ARGVS_MAX_SIZE)
-            new_argvs_idx = 0;
+        
     }
 }
 
@@ -71,23 +53,37 @@ void program_options_init(struct program_options_context* ctx,
  * @brief 
  * 
  * @param ctx 
- * @param options_size 
- * @param options 
+ * @param delims 
+ * @param opts 
+ * @param opts_size 
+ */
+void program_options_init(struct program_options_context* ctx,
+                          struct program_options_delims* delims,
+                          struct program_options_option* opts, size_t opts_size)
+{
+    ctx->parsed = _get_new_parsed();
+    ctx->delims = delims;
+    ctx->opts = opts;
+    ctx->opts_size = opts_size;
+}
+
+/**
+ * @author Jin
+ * @brief 
+ * 
+ * @param ctx 
+ * @param argc 
+ * @param argv 
  * @return true 
  * @return false 
  */
-bool program_options_add_options(struct program_options_context* ctx,
-                                 size_t options_size,
-                                 struct program_options_option* options)
+bool program_options_set_args(struct program_options_context* ctx,
+                              int argc, char** argv)
 {
     bool res = false;
 
-    if (ctx != nullptr && options != nullptr)
-    {
-        ctx->options_count = options_size;
-        ctx->options = options;
-        res = true;
-    }
+    _parse_args(ctx, argc, argv);
+    if (ctx->parsed->size) res = true;    
 
     return res;
 }
@@ -106,6 +102,7 @@ bool program_options_find_uint(struct program_options_context* ctx,
                                const char* option, uint32_t* value)
 {
     bool found = false;
+
 
 
     return found;
@@ -143,6 +140,8 @@ bool program_options_find_string(struct program_options_context* ctx,
                                  const char* option, char* value)
 {
     bool found = false;
+
+    
 
     return found;
 }
