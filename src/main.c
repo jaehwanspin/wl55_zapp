@@ -9,6 +9,11 @@ struct app_data app_data = { 0 };
  */
 void main(void)
 {
+    // while (1)
+    // {
+    //     k_sleep(K_MSEC(100));
+    // }
+
     app_init(&app_data);
     app_start(&app_data);
 }

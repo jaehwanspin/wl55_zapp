@@ -28,20 +28,28 @@ struct arg_parse_option
     enum arg_parse_value_types value_type;
 };
 
-struct arg_parse_parsed_option;
+union arg_parse_multitype_value
+{
+    int64_t  int_value;
+    uint64_t uint_value;
+    char*    string_value;
+};
+
+struct arg_parse_result
+{
+    str8_16_t                       option_name;
+    union arg_parse_multitype_value value;
+};
 
 struct arg_parse_context
 {
     struct arg_parse_option* opts;
     size_t                   opts_size;
-    struct arg_parse_parsed_option* parsed_opts;
 };
 
 void arg_parse_init(struct arg_parse_context*, struct arg_parse_option*, size_t);
-bool arg_parse_set_args(struct arg_parse_context*, int, char**);
-bbn_bool arg_parse_parse_uint(struct arg_parse_context*, uint32_t*);
-bbn_bool arg_parse_parse_int(struct arg_parse_context*, int32_t*);
-bbn_bool arg_parse_parse_string(struct arg_parse_context*, char*);
+bool arg_parse_set_args(struct arg_parse_context*, int, char**,
+    struct arg_parse_result*);
 
 #ifdef __cplusplus
 }

@@ -9,18 +9,17 @@
 #include <string.h>
 
 static struct arg_parse_option opts[] = {
-    {  }
+    { { "DevAddr" }, bbnb_both, ARG_PARSE_VALUE_TYPE_STRING },
+    { { "DevEui" }, bbnb_both, ARG_PARSE_VALUE_TYPE_STRING },
+    { { "AppEui" }, bbnb_both, ARG_PARSE_VALUE_TYPE_STRING }
 };
-
-const char* options[] = {
-    "DevAddr",
-    "DevEui",
-    "AppEui"
-};
+static struct arg_parse_context ap_ctx =
+    { opts, sizeof(opts) / sizeof(struct arg_parse_option) };
 
 // from src/main.c
 extern struct app_data app_data;
 static struct device* uart = nullptr;
+
 
 /**
  * @author Jin
@@ -33,25 +32,42 @@ static struct device* uart = nullptr;
 int at_id_handler(int argc, char** argv)
 {
     int res = 0;
+    bbn_bool parsed_res = bbnb_not_found;
+    struct arg_parse_result parsed_val = { 0, };
+
     uart = (struct device*)app_data.devs->uart;
 
-    switch (argc)
+    if (argc > 3)
     {
-    case 2: // all
-    {
-        uart_print(uart, "you!\r\n", 7);
-        break;
+        parsed_res = arg_parse_set_args(&ap_ctx, argc, argv, &parsed_val);
+
+        switch (parsed_res)
+        {
+        case bbnb_found:
+        {
+
+            break;
+        }
+        case bbnb_found_but_not_has_value:
+        {
+
+            break;
+        }
+        case bbnb_not_found:
+        {
+
+            break;
+        }
+        case bbnb_error:
+        {
+
+            break;
+        }
+        }
     }
-    case 3:
+    else // AT+ID
     {
-        uart_print(uart, "hey!\r\n", 7);
-        break;
-    }
-    default:
-    {
-        uart_print(uart, "yeah\r\n", 7);
-        break;
-    }
+
     }
    
     return res;
