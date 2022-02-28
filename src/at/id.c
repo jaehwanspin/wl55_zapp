@@ -2,10 +2,15 @@
 #include "../app.h"
 #include "../device/devices.h"
 #include "../telemetry/uart_io.h"
+#include "../util/arg_parse.h"
 
 #include "../util/custom_typedefs.h"
 
 #include <string.h>
+
+static struct arg_parse_option opts[] = {
+    {  }
+};
 
 const char* options[] = {
     "DevAddr",

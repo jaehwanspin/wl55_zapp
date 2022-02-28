@@ -26,8 +26,9 @@ int at_reset_handler(int argc, char** argv)
     int res = 0;
     uart = (struct device*)app_data.devs->uart;
 
-    uint8_t resp_msg[] = { '+', 'R', 'E', 'S', 'E', 'T', ':', ' ', 'O', 'K', '\r' };
-    uart_print(uart, resp_msg, sizeof(resp_msg));
+    str8_16_t resp_msg =
+        { '+', 'R', 'E', 'S', 'E', 'T', ':', ' ', 'O', 'K', '\r' };
+    uart_print(uart, (uint8_t*)&resp_msg, strlen((char*)&resp_msg));
 
     sys_reboot(SYS_REBOOT_WARM);
 

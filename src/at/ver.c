@@ -23,14 +23,14 @@ int at_ver_handler(int argc, char** argv)
 {
     int res = 0;
 
-    char telem_ver_resp[32] = { 0, };
+    str8_64_t telem_ver_resp = { 0, };
 
-    sprintf(telem_ver_resp, "+VER: %d.%d.%d\r",
+    sprintf((char*)&telem_ver_resp, "+VER: %d.%d.%d\r",
         APP_VERSION_MAJOR,
         APP_VERSION_MINOR,
         APP_VERSION_PATCH);
 
-    uart_print(app_data.devs->uart, (uint8_t*)telem_ver_resp, strlen(telem_ver_resp));
+    uart_print(app_data.devs->uart, (uint8_t*)&telem_ver_resp, strlen((const char*)&telem_ver_resp));
 
     return res;
 }

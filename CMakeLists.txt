@@ -32,8 +32,8 @@ set(APP_SRC src/at/test.c
             src/init/thread_init.c
             src/telemetry/lorawan_io.c
             src/telemetry/uart_io.c
+            src/util/arg_parse.c
             src/util/custom_typedefs.c
-            src/util/program_options.c
             src/workers/at_command.c
             src/workers/event.c
             src/workers/lorawan.c
