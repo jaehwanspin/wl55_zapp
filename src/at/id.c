@@ -45,22 +45,47 @@ int at_id_handler(int argc, char** argv)
         {
         case bbnb_found:
         {
+            char trim_val[256] = { 0, };
 
+            if (0 == strcmp("DevAddr", parsed_val.value.string_value))
+            {
+
+            }
+            else if (0 == strcmp("DevEui", parsed_val.value.string_value))
+            {
+
+            }
+            else if (0 == strcmp("AppEui", parsed_val.value.string_value))
+            {
+                
+            }
             break;
         }
         case bbnb_found_but_not_has_value:
         {
+            str8_32_t dev_addr = { 0, };
 
+            if (0 == strcmp("DevAddr", parsed_val.value.string_value))
+            {
+                
+            }
+            else if (0 == strcmp("DevEui", parsed_val.value.string_value))
+            {
+
+            }
+            else if (0 == strcmp("AppEui", parsed_val.value.string_value))
+            {
+                
+            }
             break;
         }
         case bbnb_not_found:
         {
-
+            
             break;
         }
         case bbnb_error:
         {
-
             break;
         }
         }

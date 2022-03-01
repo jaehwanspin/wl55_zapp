@@ -7,6 +7,7 @@
 
 #include <zephyr.h>
 #include <lorawan/lorawan.h>
+#include <drivers/lora.h>
 
 #include <stdbool.h>
 
@@ -58,7 +59,7 @@ static void _process_datarate_changed()
 static void _process_recv_data()
 {
     struct lorawan_data* data = k_queue_get(&lorawan_data_que, K_FOREVER);
-
+    
 }
 
 /**

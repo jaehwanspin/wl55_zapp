@@ -48,7 +48,7 @@ struct arg_parse_context
 };
 
 void arg_parse_init(struct arg_parse_context*, struct arg_parse_option*, size_t);
-bool arg_parse_set_args(struct arg_parse_context*, int, char**,
+bbn_bool arg_parse_set_args(struct arg_parse_context*, int, char**,
     struct arg_parse_result*);
 
 #ifdef __cplusplus
