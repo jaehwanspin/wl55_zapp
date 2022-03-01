@@ -30,9 +30,9 @@ bool arg_parse_set_args(struct arg_parse_context* ctx, int argc, char** argv,
 {
     bool res = bbnb_not_found;
 
-    if (argc > 3 && (argv != nullptr))
+    if (argv[2] != nullptr)
     {
-        char* pre_arg = argv[3];
+        char* pre_arg = argv[2];
         char* key = strtok(pre_arg, ",");
 
         if (key == nullptr)
@@ -40,6 +40,8 @@ bool arg_parse_set_args(struct arg_parse_context* ctx, int argc, char** argv,
             res = bbnb_not_found;
         }
         else
+               
+                
         {
             
         }

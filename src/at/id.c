@@ -37,7 +37,7 @@ int at_id_handler(int argc, char** argv)
 
     uart = (struct device*)app_data.devs->uart;
 
-    if (argc > 3)
+    if (argc > 2)
     {
         parsed_res = arg_parse_set_args(&ap_ctx, argc, argv, &parsed_val);
 
