@@ -6,6 +6,8 @@
 
 #include "../util/custom_typedefs.h"
 
+#include <lorawan/lorawan.h>
+
 #include <string.h>
 
 static struct arg_parse_option opts[] = {
@@ -46,16 +48,18 @@ int at_id_handler(int argc, char** argv)
         case bbnb_found:
         {
             char trim_val[256] = { 0, };
+ 
+            app_data.lorawan_cfg->otaa.
 
             if (0 == strcmp("DevAddr", parsed_val.value.string_value))
             {
-
+                
             }
             else if (0 == strcmp("DevEui", parsed_val.value.string_value))
             {
 
             }
-            else if (0 == strcmp("AppEui", parsed_val.value.string_value))
+            else if (0 == strcmp("AppEui", parsed_val.value.stri`ng_value))
             {
                 
             }
@@ -63,7 +67,7 @@ int at_id_handler(int argc, char** argv)
         }
         case bbnb_found_but_not_has_value:
         {
-            str8_32_t dev_addr = { 0, };
+            str8_32_t out_val = { 0, };
 
             if (0 == strcmp("DevAddr", parsed_val.value.string_value))
             {
